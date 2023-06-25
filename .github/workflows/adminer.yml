@@ -11,7 +11,8 @@ jobs:
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
-          path: docker
+          path: .
+          sparse-checkout: images
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -28,8 +29,8 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v3
         with:
-          context: ./docker/images/adminer
-          file: ./docker/images/adminer/Dockerfile
+          context: ./images/adminer
+          file: ./images/adminer/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/adminer:latest
