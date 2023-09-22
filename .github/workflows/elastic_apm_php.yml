@@ -25,6 +25,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Default buildx
+        run: docker buildx install
+
       - name: Build
         run: make -f .ci/Makefile build
 
@@ -51,6 +54,9 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - name: Default buildx
+        run: docker buildx install
 
       - name: Build
         run: make -f .ci/Makefile build
