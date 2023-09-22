@@ -19,15 +19,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: elastic/apm-agent-php
+          ref: 'v1.10.0'
           path: .
       - name: Build
         run: make -f .ci/Makefile build
-      - name: test
-        run: find agent/native/_build
-        shell: bash
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: package-parts-${{ matrix.arch }}
-      #     path: |
-      #       agent/native/_build/${{ matrix.arch }}-release/ext/elastic_apm*.so
-      #       agent/native/_build/${{ matrix.arch }}-release/ext/elastic_apm*.debug
+      - uses: actions/upload-artifact@v3
+        with:
+          name: package-parts-${{ matrix.arch }}
+          path: |
+            agent/native/_build/${{ matrix.arch }}-release/ext/elastic_apm*.so
