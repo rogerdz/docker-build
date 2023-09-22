@@ -1,30 +1,62 @@
 name: elastic_apm_php
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version deploy.'
+        required: true
 
 jobs:
-  build:
-    name: build-agent-library
+  build_x86-64:
+    name: build-agent-library-x86-64
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - "linux-x86-64"
-          # - "linuxmusl-x86-64"
     env:
-      BUILD_ARCHITECTURE: ${{ matrix.arch }}
+      BUILD_ARCHITECTURE: linux-x86-64
     steps:
       - uses: actions/checkout@v3
         with:
           repository: elastic/apm-agent-php
-          ref: 'v1.10.0'
+          ref: ${{ github.event.inputs.version }}
           path: .
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build
         run: make -f .ci/Makefile build
+
       - uses: actions/upload-artifact@v3
         with:
-          name: package-parts-${{ matrix.arch }}
+          name: package-parts-linux-x86-64
           path: |
-            agent/native/_build/${{ matrix.arch }}-release/ext/elastic_apm*.so
+            agent/native/_build/linux-x86-64-release/ext/elastic_apm*.so
+
+  build_arm64:
+    name: build-agent-library-arm64
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ARCHITECTURE: linux-arm64
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: elastic/apm-agent-php
+          ref: ${{ github.event.inputs.version }}
+          path: .
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build
+        run: make -f .ci/Makefile build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: package-parts-linux-arm64
+          path: |
+            agent/native/_build/linux-arm64-release/ext/elastic_apm*.so
