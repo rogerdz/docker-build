@@ -21,19 +21,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-8.2
@@ -55,19 +55,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-8.1
@@ -89,19 +89,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-8.0
@@ -123,19 +123,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.4
@@ -157,19 +157,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.3
@@ -191,19 +191,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.2
@@ -225,19 +225,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.1
@@ -259,19 +259,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.0
@@ -293,19 +293,19 @@ jobs:
           sparse-checkout: images
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-5.6
