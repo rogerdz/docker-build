@@ -1,0 +1,281 @@
+name: magento2
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version deploy.'
+        required: true
+
+jobs:
+  v2_4_6:
+    runs-on: ubuntu-latest
+    name: 2.4.6
+    if: ${{ (github.event.inputs.version == '2.4.6') || (github.event.inputs.version == '*') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.DOCKER_REPO }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: .
+          sparse-checkout: images
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Build the docker-compose stack
+        run: docker-compose -f images/magento2/2.4.6/docker-compose.yml up -d --build
+
+      - name: Sleep for 20 seconds
+        run: sleep 20s
+        shell: bash
+
+      - name: Check running containers
+        run: docker ps -a
+
+      - name: Run setup
+        run: docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento setup:install --base-url=https://localhost/ --backend-frontname=admin --db-host=db --db-name=magento --db-user=magento --db-password=magento --admin-firstname=Magento --admin-lastname=User --admin-email=user@example.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=opensearch --opensearch-host=opensearch --opensearch-port=9200 --opensearch-index-prefix=magento2 --opensearch-timeout=15
+
+      - name: Config magento
+        run: |
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento setup:config:set --enable-debug-logging=false
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento setup:config:set --consumers-wait-for-messages=0 --no-interaction
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento composer require ethanyehuda/magento2-cronjobmanager
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento setup:upgrade
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento deploy:mode:set developer
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento setup:di:compile
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento catalog:images:resize --skip_hidden_images
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento setup:static:deploy -f
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set web/cookie/cookie_lifetime 10800
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento cache:clean
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento cron:install --force
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento rm -rf var/log/*
+
+      - name: Commit changed
+        run: |
+          docker commit magento rogerdz/magento2:2.4.6
+          docker commit db rogerdz/magento2:database-2.4.6
+          docker commit opensearch rogerdz/magento2:search-engine-2.4.6
+
+      - name: Check images
+        run: docker images
+
+      - name: Push images
+        run: |
+          docker push rogerdz/magento2:2.4.6
+          docker push rogerdz/magento2:database-2.4.6
+          docker push rogerdz/magento2:search-engine-2.4.6
+
+  v2_4_5-p1:
+    runs-on: ubuntu-latest
+    name: 2.4.5-p1
+    if: ${{ (github.event.inputs.version == '2.4.5-p1') || (github.event.inputs.version == '*') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.DOCKER_REPO }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: .
+          sparse-checkout: images
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Build the docker-compose stack  
+        run: docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml up -d --build
+        
+      - name: Sleep for 20 seconds
+        run: sleep 20s
+        shell: bash
+        
+      - name: Check running containers
+        run: docker ps -a
+
+      - name: Run setup
+        run: docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento setup:install --base-url=https://localhost/ --backend-frontname=admin --db-host=db --db-name=magento --db-user=magento --db-password=magento --admin-firstname=Magento --admin-lastname=User --admin-email=user@example.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 --elasticsearch-host=elasticsearch --elasticsearch-port=9200
+
+      - name: Config magento
+        run: |
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento setup:config:set --enable-debug-logging=false
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento setup:config:set --consumers-wait-for-messages=0 --no-interaction
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento module:disable Magento_TwoFactorAuth
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento composer require ethanyehuda/magento2-cronjobmanager:1.14.0
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento setup:upgrade
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento deploy:mode:set developer
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento setup:di:compile
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento catalog:images:resize --skip_hidden_images
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento setup:static:deploy -f
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set web/cookie/cookie_lifetime 10800
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento cache:clean
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento cron:install --force
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento rm -rf var/log/*
+
+      - name: Commit changed
+        run: |
+          docker commit magento rogerdz/magento2:2.4.5-p1
+          docker commit db rogerdz/magento2:database-2.4.5-p1
+          docker commit elasticsearch rogerdz/magento2:search-engine-2.4.5-p1
+
+      - name: Check images
+        run: docker images
+
+      - name: Push images
+        run: |
+          docker push rogerdz/magento2:2.4.5-p1
+          docker push rogerdz/magento2:database-2.4.5-p1
+          docker push rogerdz/magento2:search-engine-2.4.5-p1
+
+  v2_3_7-p4:
+    runs-on: ubuntu-latest
+    name: 2.3.7-p4
+    if: ${{ (github.event.inputs.version == '2.3.7-p4') || (github.event.inputs.version == '*') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.DOCKER_REPO }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: .
+          sparse-checkout: images
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Build the docker-compose stack  
+        run: docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml up -d --build
+        
+      - name: Sleep for 20 seconds
+        run: sleep 20s
+        shell: bash
+        
+      - name: Check running containers
+        run: docker ps -a
+
+      - name: Run setup
+        run: docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento setup:install --base-url=https://localhost/ --backend-frontname=admin --db-host=db --db-name=magento --db-user=magento --db-password=magento --admin-firstname=Magento --admin-lastname=User --admin-email=user@example.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1
+
+      - name: Config magento
+        run: |
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento setup:config:set --enable-debug-logging=false
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento setup:config:set --consumers-wait-for-messages=0 --no-interaction
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento composer require ethanyehuda/magento2-cronjobmanager:1.14.0
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento setup:upgrade
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento deploy:mode:set developer
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento setup:di:compile
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento catalog:images:resize
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento setup:static:deploy -f
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set web/cookie/cookie_lifetime 10800
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set catalog/search/engine elasticsearch7
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set catalog/search/elasticsearch7_server_hostname elasticsearch
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento indexer:reindex
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento cache:clean
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento cron:install --force
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento rm -rf var/log/*
+
+      - name: Commit changed
+        run: |
+          docker commit magento rogerdz/magento2:2.3.7-p4
+          docker commit db rogerdz/magento2:database-2.3.7-p4
+          docker commit elasticsearch rogerdz/magento2:search-engine-2.3.7-p4
+
+      - name: Check images
+        run: docker images
+
+      - name: Push images
+        run: |
+          docker push rogerdz/magento2:2.3.7-p4
+          docker push rogerdz/magento2:database-2.3.7-p4
+          docker push rogerdz/magento2:search-engine-2.3.7-p4
+
+  v2_3_3:
+    runs-on: ubuntu-latest
+    name: 2.3.3
+    if: ${{ (github.event.inputs.version == '2.3.3') || (github.event.inputs.version == '*') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.DOCKER_REPO }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: .
+          sparse-checkout: images
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Build the docker-compose stack  
+        run: docker-compose -f images/magento2/2.3.3/docker-compose.yml up -d --build
+        
+      - name: Sleep for 20 seconds
+        run: sleep 20s
+        shell: bash
+        
+      - name: Check running containers
+        run: docker ps -a
+
+      - name: Run setup
+        run: docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento setup:install --base-url=https://localhost/ --backend-frontname=admin --db-host=db --db-name=magento --db-user=magento --db-password=magento --admin-firstname=Magento --admin-lastname=User --admin-email=user@example.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1
+
+      - name: Config magento
+        run: |
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento setup:config:set --enable-debug-logging=false
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento composer require ethanyehuda/magento2-cronjobmanager:1.14.0
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento setup:upgrade
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento deploy:mode:set developer
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento setup:di:compile
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento catalog:images:resize
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento setup:static:deploy -f
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set web/cookie/cookie_lifetime 10800
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set catalog/search/elasticsearch6_server_hostname elasticsearch
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento cache:clean
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento cron:install --force
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento rm -rf var/log/*
+
+      - name: Commit changed
+        run: |
+          docker commit magento rogerdz/magento2:2.3.3
+          docker commit db rogerdz/magento2:database-2.3.3
+          docker commit elasticsearch rogerdz/magento2:search-engine-2.3.3
+
+      - name: Check images
+        run: docker images
+
+      - name: Push images
+        run: |
+          docker push rogerdz/magento2:2.3.3
+          docker push rogerdz/magento2:database-2.3.3
+          docker push rogerdz/magento2:search-engine-2.3.3
