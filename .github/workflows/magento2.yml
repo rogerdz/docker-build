@@ -54,7 +54,7 @@ jobs:
           docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
           docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
           docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
-          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime 0
           docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
           docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento cache:clean
           docker-compose -f images/magento2/2.4.6/docker-compose.yml exec -T -u www-data magento bin/magento cron:install --force
@@ -122,7 +122,7 @@ jobs:
           docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
           docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
           docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
-          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime 0
           docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
           docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento cache:clean
           docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml exec -T -u www-data magento bin/magento cron:install --force
@@ -189,7 +189,7 @@ jobs:
           docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
           docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
           docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
-          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime 0
           docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
           docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set catalog/search/engine elasticsearch7
           docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml exec -T -u www-data magento bin/magento config:set catalog/search/elasticsearch7_server_hostname elasticsearch
@@ -258,7 +258,7 @@ jobs:
           docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/admin_account_sharing 1
           docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/session_lifetime 10800
           docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_is_forced 0
-          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime ''
+          docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set admin/security/password_lifetime 0
           docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set --lock-env admin/usage/enabled 0
           docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento config:set catalog/search/elasticsearch6_server_hostname elasticsearch
           docker-compose -f images/magento2/2.3.3/docker-compose.yml exec -T -u www-data magento bin/magento cache:clean
