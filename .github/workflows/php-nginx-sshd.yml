@@ -13,7 +13,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '8.3') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '8.2') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -81,7 +81,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '8.1') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -115,7 +115,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '7.4') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -149,7 +149,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '7.3') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}

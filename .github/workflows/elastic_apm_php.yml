@@ -13,7 +13,7 @@ jobs:
     env:
       BUILD_ARCHITECTURE: linux-x86-64
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: elastic/apm-agent-php
           ref: ${{ github.event.inputs.version }}
@@ -43,7 +43,7 @@ jobs:
     env:
       BUILD_ARCHITECTURE: linux-arm64
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: elastic/apm-agent-php
           ref: ${{ github.event.inputs.version }}
