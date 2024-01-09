@@ -38,10 +38,10 @@ jobs:
             agent/native/_build/linux-x86-64-release/ext/elastic_apm*.so
 
   build_arm64:
-    name: build-agent-library-arm64
+    name: build-agent-library-aarch64
     runs-on: ubuntu-latest
     env:
-      BUILD_ARCHITECTURE: linux-arm64
+      BUILD_ARCHITECTURE: linux-aarch64
     steps:
       - uses: actions/checkout@v4
         with:
@@ -63,6 +63,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: package-parts-linux-arm64
+          name: package-parts-linux-aarch64
           path: |
-            agent/native/_build/linux-arm64-release/ext/elastic_apm*.so
+            agent/native/_build/linux-aarch64-release/ext/elastic_apm*.so
