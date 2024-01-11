@@ -40,7 +40,7 @@ jobs:
       - name: Build
         run: make -f .ci/Makefile build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: package-parts-linux-x86-64
           path: |
@@ -79,7 +79,7 @@ jobs:
       - name: Build
         run: make -f .ci/Makefile build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: package-parts-linux-arm64
           path: |
