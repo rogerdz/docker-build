@@ -28,6 +28,15 @@ jobs:
       - name: Default buildx
         run: docker buildx install
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build
         run: make -f .ci/Makefile build
 
@@ -57,6 +66,15 @@ jobs:
 
       - name: Default buildx
         run: docker buildx install
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build
         run: make -f .ci/Makefile build
