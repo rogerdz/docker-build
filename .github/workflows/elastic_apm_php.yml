@@ -9,7 +9,7 @@ on:
 jobs:
   build_x86-64:
     name: build-agent-library-x86-64
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       BUILD_ARCHITECTURE: linux-x86-64
     steps:
@@ -48,7 +48,7 @@ jobs:
 
   build_arm64:
     name: build-agent-library-arm64
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       BUILD_ARCHITECTURE: linux-arm64
     steps:
