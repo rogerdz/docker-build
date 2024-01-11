@@ -32,6 +32,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build and publish
         uses: docker/build-push-action@v5
         with:
@@ -65,6 +74,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build and publish
         uses: docker/build-push-action@v5
@@ -100,6 +118,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build and publish
         uses: docker/build-push-action@v5
         with:
@@ -133,6 +160,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build and publish
         uses: docker/build-push-action@v5
@@ -168,6 +204,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build and publish
         uses: docker/build-push-action@v5
         with:
@@ -201,6 +246,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build and publish
         uses: docker/build-push-action@v5
@@ -236,6 +290,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build and publish
         uses: docker/build-push-action@v5
         with:
@@ -269,6 +332,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build and publish
         uses: docker/build-push-action@v5
@@ -304,6 +376,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build and publish
         uses: docker/build-push-action@v5
         with:
@@ -337,6 +418,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build and publish
         uses: docker/build-push-action@v5

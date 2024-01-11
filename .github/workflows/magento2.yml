@@ -26,6 +26,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build the docker-compose stack
         run: docker-compose -f images/magento2/2.4.6/docker-compose.yml up -d --build
 
@@ -94,6 +103,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
       - name: Build the docker-compose stack  
         run: docker-compose -f images/magento2/2.4.5-p1/docker-compose.yml up -d --build
         
@@ -161,6 +179,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build the docker-compose stack  
         run: docker-compose -f images/magento2/2.3.7-p4/docker-compose.yml up -d --build
@@ -231,6 +258,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
 
       - name: Build the docker-compose stack  
         run: docker-compose -f images/magento2/2.3.3/docker-compose.yml up -d --build
