@@ -42,7 +42,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: package-parts-linux-x86-64
+          name: elastic-apm-linux-x86-64
           path: |
             agent/native/_build/linux-x86-64-release/ext/elastic_apm*.so
 
@@ -81,6 +81,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: package-parts-linux-arm64
+          name: elastic-apm-linux-arm64
           path: |
             agent/native/_build/linux-arm64-release/ext/elastic_apm*.so
