@@ -7,10 +7,10 @@ on:
         required: true
 
 jobs:
-  v17:
+  v3_10:
     runs-on: ubuntu-latest
-    name: v17
-    if: ${{ (github.event.inputs.version == '17') || (github.event.inputs.version == '*') }}
+    name: v3.10
+    if: ${{ (github.event.inputs.version == '3.10') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,16 +45,16 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./images/odoo
-          file: ./images/odoo/Dockerfile-17
+          file: ./images/odoo/Dockerfile-python-3.10
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:17
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.10
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
   
-  v15:
+  v3_8:
     runs-on: ubuntu-latest
-    name: v15
-    if: ${{ (github.event.inputs.version == '15') || (github.event.inputs.version == '*') }}
+    name: v3.8
+    if: ${{ (github.event.inputs.version == '3.8') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -89,8 +89,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./images/odoo
-          file: ./images/odoo/Dockerfile-15
+          file: ./images/odoo/Dockerfile-python-3.8
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:15
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.8
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
