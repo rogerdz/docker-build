@@ -1,10 +1,15 @@
 name: shopify
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version deploy.'
+        required: true
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: ${{ (github.event.inputs.version == 'debian') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,6 +51,7 @@ jobs:
 
   publish-alpine:
     runs-on: ubuntu-latest
+    if: ${{ (github.event.inputs.version == 'alpine') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
