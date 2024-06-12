@@ -9,7 +9,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'debian') || (github.event.inputs.version == '*') }}
+    if: ${{ (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,7 +51,7 @@ jobs:
 
   publish-alpine:
     runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'alpine') || (github.event.inputs.version == '*') }}
+    if: ${{ (github.event.inputs.version == 'node-alpine') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
