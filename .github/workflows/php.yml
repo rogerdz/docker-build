@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-8.3
@@ -67,7 +67,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-8.3
@@ -102,7 +102,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-8.2
@@ -136,7 +136,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-8.2
@@ -171,7 +171,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-8.1
@@ -205,7 +205,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-8.1
@@ -240,7 +240,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-8.0
@@ -274,7 +274,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-8.0
@@ -309,7 +309,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-7.4
@@ -343,7 +343,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-7.4
@@ -378,7 +378,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-7.3
@@ -412,7 +412,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-7.3
@@ -447,7 +447,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-7.2
@@ -481,7 +481,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-7.2
@@ -516,7 +516,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-7.1
@@ -550,7 +550,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-7.1
@@ -585,7 +585,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-7.0
@@ -619,7 +619,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-7.0
@@ -654,7 +654,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-5.6
@@ -688,7 +688,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-cli-5.6
