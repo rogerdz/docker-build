@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php-nginx-sshd
           file: ./images/php-nginx-sshd/Dockerfile-8.3
@@ -67,7 +67,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php-nginx-sshd
           file: ./images/php-nginx-sshd/Dockerfile-8.2
@@ -101,7 +101,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php-nginx-sshd
           file: ./images/php-nginx-sshd/Dockerfile-8.1
@@ -135,7 +135,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php-nginx-sshd
           file: ./images/php-nginx-sshd/Dockerfile-7.4
@@ -169,7 +169,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/php-nginx-sshd
           file: ./images/php-nginx-sshd/Dockerfile-7.3

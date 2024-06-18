@@ -42,7 +42,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-22
@@ -86,7 +86,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-21
@@ -130,7 +130,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-20
@@ -174,7 +174,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-20-sshd
@@ -217,7 +217,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-19
@@ -261,7 +261,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-18
@@ -305,7 +305,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-18-sshd
@@ -348,7 +348,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-16
@@ -392,7 +392,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-16-sshd
@@ -435,7 +435,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-14
@@ -479,7 +479,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-14-sshd
@@ -522,7 +522,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-10
@@ -566,7 +566,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-10-sshd

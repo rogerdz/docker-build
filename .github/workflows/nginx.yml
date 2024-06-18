@@ -36,7 +36,7 @@ jobs:
           sudo swapon --show
 
       - name: Build and publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/nginx
           file: ./images/nginx/Dockerfile
