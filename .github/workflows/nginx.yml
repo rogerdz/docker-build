@@ -37,6 +37,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/nginx
           file: ./images/nginx/Dockerfile

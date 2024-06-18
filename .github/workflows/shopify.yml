@@ -42,6 +42,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/shopify
           file: ./images/shopify/Dockerfile
@@ -84,6 +86,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/shopify
           file: ./images/shopify/Dockerfile-alpine

@@ -43,6 +43,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/odoo
           file: ./images/odoo/Dockerfile-python-3.12
@@ -87,6 +89,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/odoo
           file: ./images/odoo/Dockerfile-python-3.11
@@ -131,6 +135,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/odoo
           file: ./images/odoo/Dockerfile-python-3.10
@@ -175,6 +181,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/odoo
           file: ./images/odoo/Dockerfile-python-3.9
@@ -219,6 +227,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/odoo
           file: ./images/odoo/Dockerfile-python-3.8

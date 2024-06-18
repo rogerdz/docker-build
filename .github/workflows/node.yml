@@ -43,6 +43,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-22
@@ -87,6 +89,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-21
@@ -131,6 +135,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-20
@@ -175,6 +181,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-20-sshd
@@ -218,6 +226,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-19
@@ -262,6 +272,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-18
@@ -306,6 +318,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-18-sshd
@@ -349,6 +363,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-16
@@ -393,6 +409,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-16-sshd
@@ -436,6 +454,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-14
@@ -480,6 +500,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-14-sshd
@@ -523,6 +545,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-10
@@ -567,6 +591,8 @@ jobs:
 
       - name: Build and publish
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
         with:
           context: ./images/node
           file: ./images/node/Dockerfile-10-sshd
