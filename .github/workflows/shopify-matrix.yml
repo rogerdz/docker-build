@@ -1,4 +1,4 @@
-name: shopify
+name: shopify-matrix
 on:
   workflow_dispatch:
 jobs:
