@@ -1,4 +1,4 @@
-name: nginx
+name: docker-ssh
 on:
   workflow_dispatch:
 
