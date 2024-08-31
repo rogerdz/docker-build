@@ -44,7 +44,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-8.3
@@ -89,7 +89,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-8.2
@@ -134,7 +134,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-8.1
@@ -179,7 +179,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-8.0
@@ -224,7 +224,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.4
@@ -269,7 +269,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.3
@@ -314,7 +314,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.2
@@ -359,7 +359,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.1
@@ -404,7 +404,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-7.0
@@ -449,7 +449,7 @@ jobs:
       - name: Build and publish
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/php
           file: ./images/php/Dockerfile-base-5.6
