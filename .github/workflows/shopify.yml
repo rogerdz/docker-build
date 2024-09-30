@@ -50,6 +50,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopify:node
+          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   # publish-alpine:
   #   runs-on: ubuntu-latest

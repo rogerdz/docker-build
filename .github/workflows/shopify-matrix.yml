@@ -58,6 +58,7 @@ jobs:
           build-args: NODE_VERSION=${{ matrix.node_version }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopify:node-${{ matrix.node_version }}
+          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   ssh:
     runs-on: ubuntu-latest
