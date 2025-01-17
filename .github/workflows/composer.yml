@@ -4,19 +4,7 @@ on:
 
 jobs:
   publish:
-    strategy:
-      matrix:
-          build:
-            - amd64
-            - arm64
-          include:
-            - build: amd64
-              arch: linux/amd64
-              os: ubuntu-22.04
-            - build: arm64
-              arch: linux/arm64
-              os: ubuntu-22.04-arm
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,6 +42,6 @@ jobs:
         with:
           context: ./images/composer
           file: ./images/composer/Dockerfile
-          platforms: ${{ matrix.arch }}
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/composer:latest
