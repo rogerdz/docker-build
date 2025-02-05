@@ -8,7 +8,7 @@ on:
 
 jobs:
   v8_4:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.4
     if: ${{ (github.event.inputs.version == '8.4') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '8.4*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -44,7 +44,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.4
 
   v8_4_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.4-cli
     if: ${{ (github.event.inputs.version == '8.4-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '8.4*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -81,7 +81,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_3:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.3
     if: ${{ (github.event.inputs.version == '8.3') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '8.3*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -117,7 +117,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.3
 
   v8_3_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.3-cli
     if: ${{ (github.event.inputs.version == '8.3-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '8.3*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -154,7 +154,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_2:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.2
     if: ${{ (github.event.inputs.version == '8.2') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '8.2*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -190,7 +190,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.2
 
   v8_2_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.2-cli
     if: ${{ (github.event.inputs.version == '8.2-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '8.2*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -227,7 +227,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_1:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.1
     if: ${{ (github.event.inputs.version == '8.1') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '8.1*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -263,7 +263,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.1
 
   v8_1_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.1-cli
     if: ${{ (github.event.inputs.version == '8.1-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '8.1*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -300,7 +300,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_0:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.0
     if: ${{ (github.event.inputs.version == '8.0') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '8.0*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -336,7 +336,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.0
 
   v8_0_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v8.0-cli
     if: ${{ (github.event.inputs.version == '8.0-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '8.0*') || (github.event.inputs.version == 'release') || (github.event.inputs.version == '*') }}
     steps:
@@ -373,7 +373,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_4:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.4
     if: ${{ (github.event.inputs.version == '7.4') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '7.4*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -409,7 +409,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.4
 
   v7_4_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.4-cli
     if: ${{ (github.event.inputs.version == '7.4-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '7.4*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -446,7 +446,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_3:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.3
     if: ${{ (github.event.inputs.version == '7.3') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '7.3*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -482,7 +482,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.3
 
   v7_3_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.3-cli
     if: ${{ (github.event.inputs.version == '7.3-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '7.3*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -519,7 +519,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_2:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.2
     if: ${{ (github.event.inputs.version == '7.2') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '7.2*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -555,7 +555,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.2
 
   v7_2_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.2-cli
     if: ${{ (github.event.inputs.version == '7.2-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '7.2*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -592,7 +592,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_1:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.1
     if: ${{ (github.event.inputs.version == '7.1') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '7.1*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -628,7 +628,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.1
 
   v7_1_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.1-cli
     if: ${{ (github.event.inputs.version == '7.1-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '7.1*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -665,7 +665,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_0:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.0
     if: ${{ (github.event.inputs.version == '7.0') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '7.0*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -701,7 +701,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.0
 
   v7_0_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v7.0-cli
     if: ${{ (github.event.inputs.version == '7.0-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '7.0*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -738,7 +738,7 @@ jobs:
           build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v5_6:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v5.6
     if: ${{ (github.event.inputs.version == '5.6') || (github.event.inputs.version == 'fpm') || (github.event.inputs.version == '5.6*') ||  (github.event.inputs.version == '*') }}
     steps:
@@ -774,7 +774,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:5.6
 
   v5_6_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: v5.6-cli
     if: ${{ (github.event.inputs.version == '5.6-cli') || (github.event.inputs.version == 'cli') || (github.event.inputs.version == '5.6*') ||  (github.event.inputs.version == '*') }}
     steps:
