@@ -1,0 +1,53 @@
+name: libvips
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version deploy.'
+        required: true
+
+jobs:
+  v8_11_3:
+    runs-on: ubuntu-latest
+    name: v8.11.3
+    if: ${{ (github.event.inputs.version == '8.11.3') || (github.event.inputs.version == '*') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.DOCKER_REPO }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: .
+          sparse-checkout: images
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
+      - name: Build and publish
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: ./images/libvips
+          file: ./images/libvips/Dockerfile-8.11.3
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/libvips:8.11.3
