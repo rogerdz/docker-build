@@ -102,13 +102,13 @@ jobs:
           DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/cli
-          file: ./images/cli/Dockerfile-debian
+          file: ./images/cli/Dockerfile-wolfi
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
             BRANCH_CLI=shopify
             GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:shopify
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:shopify-wolfi
 
   node:
     runs-on: ubuntu-latest
