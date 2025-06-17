@@ -80,7 +80,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.4-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_3:
     runs-on: ubuntu-22.04
@@ -155,7 +154,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.3-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_2:
     runs-on: ubuntu-22.04
@@ -230,7 +228,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.2-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_1:
     runs-on: ubuntu-22.04
@@ -305,7 +302,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.1-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v8_0:
     runs-on: ubuntu-22.04
@@ -380,7 +376,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:8.0-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_4:
     runs-on: ubuntu-22.04
@@ -455,7 +450,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.4-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_3:
     runs-on: ubuntu-22.04
@@ -530,7 +524,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.3-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_2:
     runs-on: ubuntu-22.04
@@ -605,7 +598,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.2-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_1:
     runs-on: ubuntu-22.04
@@ -680,7 +672,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.1-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v7_0:
     runs-on: ubuntu-22.04
@@ -755,7 +746,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:7.0-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v5_6:
     runs-on: ubuntu-22.04
@@ -830,4 +820,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:5.6-cli
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
