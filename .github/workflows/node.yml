@@ -52,7 +52,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:24
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v22:
     runs-on: ubuntu-22.04
@@ -99,7 +98,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:22
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v20:
     runs-on: ubuntu-22.04
@@ -146,7 +144,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:20
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v20-sshd:
     runs-on: ubuntu-22.04
@@ -239,7 +236,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:18
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v18-sshd:
     runs-on: ubuntu-22.04
@@ -332,7 +328,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:16
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v16-sshd:
     runs-on: ubuntu-22.04
@@ -425,7 +420,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:14
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v14-sshd:
     runs-on: ubuntu-22.04
@@ -518,7 +512,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:10
-          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   v10-sshd:
     runs-on: ubuntu-22.04
