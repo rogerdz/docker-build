@@ -50,6 +50,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:wolfi
+          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   bullseye:
     runs-on: ubuntu-latest
@@ -94,6 +95,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:bullseye
+          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   buster:
     runs-on: ubuntu-latest
@@ -138,6 +140,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:buster
+          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
 
   stretch:
     runs-on: ubuntu-latest
@@ -182,3 +185,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:stretch
+          build-args: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
