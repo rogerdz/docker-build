@@ -20,7 +20,7 @@ jobs:
           - "stretch"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
     if: ${{ (github.event.inputs.version == 'shopify') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -122,7 +122,7 @@ jobs:
           - "buster"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -176,7 +176,7 @@ jobs:
           - "bullseye"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}

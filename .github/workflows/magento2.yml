@@ -13,7 +13,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '2.4.6') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '2.4.5-p1') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -167,7 +167,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '2.3.7-p4') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -246,7 +246,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '2.3.3') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}

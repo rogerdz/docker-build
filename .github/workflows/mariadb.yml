@@ -13,7 +13,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '11.4') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -49,7 +49,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.11') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -85,7 +85,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.6') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -121,7 +121,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.5') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -157,7 +157,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.4') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -193,7 +193,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.3') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -229,7 +229,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.2') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -265,7 +265,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.1') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
