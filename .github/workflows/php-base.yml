@@ -117,10 +117,11 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.docker-build.outputs.matrix) }}
     steps:
-      - uses: docker/login-action@v3
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       - run: |
           docker buildx create --use
           docker buildx imagetools create \
