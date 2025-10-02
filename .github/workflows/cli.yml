@@ -2,22 +2,72 @@ name: cli
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version deploy.'
+      target:
+        description: "Target: php, node, shopify or *"
         required: true
+        default: "*"
 
 jobs:
-  php:
+  docker-build:
     runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'php') || (github.event.inputs.version == '*') }}
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - name: Generate matrix
+        id: set-matrix
+        run: |
+          INPUT="${{ github.event.inputs.target }}"
+
+          if [ "$INPUT" = "*" ]; then
+            TARGETS=("php" "node" "odoo" "shopify")
+          else
+            read -ra TARGETS <<< "$INPUT"
+          fi
+
+          MATRIX_ENTRIES=()
+          for t in "${TARGETS[@]}"; do
+            case "$t" in
+              php)
+                MATRIX_ENTRIES+=(
+                  '{"target":"php","distro":"stretch","branch":"master"}'
+                  '{"target":"php","distro":"buster","branch":"master"}'
+                  '{"target":"php","distro":"bullseye","branch":"master"}'
+                  '{"target":"php","distro":"bookworm","branch":"master"}'
+                )
+                ;;
+              node)
+                MATRIX_ENTRIES+=(
+                  '{"target":"node","distro":"buster","branch":"node"}'
+                  '{"target":"node","distro":"bullseye","branch":"node"}'
+                  '{"target":"node","distro":"bookworm","branch":"node"}'
+                )
+                ;;
+              odoo)
+                MATRIX_ENTRIES+=(
+                  '{"target":"odoo","distro":"bullseye","branch":"odoo"}'
+                  '{"target":"odoo","distro":"bookworm","branch":"odoo"}'
+                )
+                ;;
+              shopify)
+                MATRIX_ENTRIES+=(
+                  '{"target":"shopify","distro":"wolfi","branch":"shopify"}'
+                )
+                ;;
+              *)
+                echo "Unknown target: $t"; exit 1
+                ;;
+            esac
+          done
+
+          JSON=$(printf '%s\n' "${MATRIX_ENTRIES[@]}" | jq -s '{include: .}')
+          echo "matrix=$JSON" >> $GITHUB_OUTPUT
+
+  build-amd64:
+    needs: docker-build
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        os_version:
-          - "bookworm"
-          - "bullseye"
-          - "buster"
-          - "stretch"
+      matrix: ${{ fromJson(needs.detect.outputs.matrix).include }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -26,12 +76,6 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           path: .
           sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
         uses: docker/login-action@v3
@@ -48,78 +92,44 @@ jobs:
           sudo swapon /swapfile
           sudo swapon --show
 
-      - name: Build and publish
+      - name: Build Debian image
+        if: matrix.variant != 'shopify'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/cli
           file: ./images/cli/Dockerfile-debian
-          platforms: linux/amd64,linux/arm64
-          push: true
+          platforms: linux/amd64
           build-args: |
-            OS_VERSION=${{ matrix.os_version }}
-            BRANCH_CLI=master
+            OS_VERSION=${{ matrix.distro }}
+            BRANCH_CLI=${{ matrix.branch }}
             GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:php-${{ matrix.os_version }}
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}-amd64
 
-  shopify:
-    runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'shopify') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
+      - name: Build Wolfi image
+        if: matrix.variant == 'shopify'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/cli
           file: ./images/cli/Dockerfile-wolfi
-          platforms: linux/amd64,linux/arm64
-          push: true
+          platforms: linux/amd64
           build-args: |
-            BRANCH_CLI=shopify
+            OS_VERSION=${{ matrix.distro }}
+            BRANCH_CLI=${{ matrix.branch }}
             GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:shopify-wolfi
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}-amd64
 
-  node:
-    runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
+  build-arm64:
+    needs: docker-build
+    runs-on: ubuntu-latest-arm
     strategy:
       fail-fast: false
-      matrix:
-        os_version:
-          - "bookworm"
-          - "bullseye"
-          - "buster"
+      matrix: ${{ fromJson(needs.detect.outputs.matrix).include }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -128,12 +138,6 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           path: .
           sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
         uses: docker/login-action@v3
@@ -150,7 +154,8 @@ jobs:
           sudo swapon /swapfile
           sudo swapon --show
 
-      - name: Build and publish
+      - name: Build Debian image
+        if: matrix.variant != 'shopify'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
@@ -158,64 +163,44 @@ jobs:
           context: ./images/cli
           file: ./images/cli/Dockerfile-debian
           platforms: linux/amd64,linux/arm64
-          push: true
           build-args: |
-            OS_VERSION=${{ matrix.os_version }}
-            BRANCH_CLI=node
+            OS_VERSION=${{ matrix.distro }}
+            BRANCH_CLI=${{ matrix.branch }}
             GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:node-${{ matrix.os_version }}
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}
 
-  odoo:
+      - name: Build Wolfi image
+        if: matrix.variant == 'shopify'
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: ./images/cli
+          file: ./images/cli/Dockerfile-wolfi
+          platforms: linux/arm64
+          build-args: |
+            OS_VERSION=${{ matrix.distro }}
+            BRANCH_CLI=${{ matrix.branch }}
+            GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}
+
+  manifest:
+    needs: [docker-build, build-amd64, build-arm64]
     runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'odoo') || (github.event.inputs.version == '*') }}
     strategy:
       fail-fast: false
-      matrix:
-        os_version:
-          - "bookworm"
-          - "bullseye"
+      matrix: ${{ fromJson(needs.detect.outputs.matrix).include }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Login Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/cli
-          file: ./images/cli/Dockerfile-debian
-          platforms: linux/amd64,linux/arm64
-          push: true
-          build-args: |
-            OS_VERSION=${{ matrix.os_version }}
-            BRANCH_CLI=odoo
-            GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:odoo-${{ matrix.os_version }}
-
+      - run: |
+          docker buildx create --use
+          docker buildx imagetools create \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }} \
+            ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}-amd64 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}-arm64
