@@ -20,21 +20,24 @@ jobs:
       - name: Generate matrix
         id: set-matrix
         run: |
-          ALL_VERSIONS='["5.6","7.0","7.1","7.2","7.3","7.4","8.0","8.1","8.2","8.3","8.4"]'
+          ALL_VERSIONS='5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4'
           if [ "${{ github.event.inputs.php }}" = "*" ]; then
-            VERSIONS=$ALL_VERSIONS
+            VERSIONS=($ALL_VERSIONS)
           else
-            VERSIONS='["'${{ github.event.inputs.php }}'"]'
+            VERSIONS=(${{ github.event.inputs.php }})
           fi
 
           if [ "${{ github.event.inputs.variant }}" = "*" ]; then
-            VARIANTS='["cli","fpm"]'
+            VARIANTS=("cli" "fpm")
           else
-            VARIANTS='["'${{ github.event.inputs.variant }}'"]'
+            VARIANTS=(${{ github.event.inputs.variant }})
           fi
 
-          echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
-          echo "variants=$VARIANTS" >> $GITHUB_OUTPUT
+          VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s .)
+          VARIANTS_JSON=$(printf '%s\n' "${VARIANTS[@]}" | jq -R . | jq -s .)
+
+          echo "versions=$VERSIONS_JSON" >> $GITHUB_OUTPUT
+          echo "variants=$VARIANTS_JSON" >> $GITHUB_OUTPUT
 
   build:
     needs: docker-build
