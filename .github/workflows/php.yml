@@ -20,17 +20,20 @@ jobs:
       - name: Generate matrix
         id: set-matrix
         run: |
+          INPUT_PHP="${{ github.event.inputs.php }}"
+          INPUT_VARIANT="${{ github.event.inputs.variant }}"
+
           ALL_VERSIONS='5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4'
-          if [ "${{ github.event.inputs.php }}" = "*" ]; then
+          if [ "$INPUT_PHP" = "*" ]; then
             VERSIONS=($ALL_VERSIONS)
           else
-            VERSIONS=(${{ github.event.inputs.php }})
+            read -ra VERSIONS <<< "$INPUT_PHP"
           fi
 
-          if [ "${{ github.event.inputs.variant }}" = "*" ]; then
+          if [ "$INPUT_VARIANT" = "*" ]; then
             VARIANTS=("cli" "fpm")
           else
-            VARIANTS=(${{ github.event.inputs.variant }})
+            VARIANTS=($INPUT_VARIANT)
           fi
 
           VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s -c .)
