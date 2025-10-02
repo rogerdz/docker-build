@@ -83,4 +83,7 @@ jobs:
           context: ./images/php
           file: ./images/php/Dockerfile-${{ matrix.variant }}-${{ matrix.php }}
           platforms: linux/amd64,linux/arm64
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:${{ matrix.php }}-${{ matrix.variant }}
+          tags: >-
+            ${{ matrix.variant == 'fpm'
+                && format('{0}/php-fpm:{1}', secrets.DOCKERHUB_USERNAME, matrix.php)
+                || format('{0}/php-fpm:{1}-{2}', secrets.DOCKERHUB_USERNAME, secrets.DOCKERHUB_REPO, matrix.php, matrix.variant) }}
