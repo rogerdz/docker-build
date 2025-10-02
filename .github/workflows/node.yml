@@ -2,15 +2,63 @@ name: node
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version deploy.'
+      node:
+        description: "Node version (vd: 20, 22, 24 or *)"
         required: true
+        default: "*"
+      variant:
+        description: "Node variant: node, sshd or *"
+        required: true
+        default: "*"
 
 jobs:
-  v24:
+  docker-build:
     runs-on: ubuntu-22.04
-    name: v24
-    if: ${{ (github.event.inputs.version == '24') || (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
+    outputs:
+      versions: ${{ steps.set-matrix.outputs.versions }}
+      variants: ${{ steps.set-matrix.outputs.variants }}
+    steps:
+      - name: Generate matrix
+        id: set-matrix
+        run: |
+          INPUT_NODE="${{ github.event.inputs.node }}"
+          INPUT_VARIANT="${{ github.event.inputs.variant }}"
+
+          ALL_VERSIONS=(
+            10
+            14
+            16
+            18
+            20
+            22
+            24
+          )
+          if [ "$INPUT_NODE" = "*" ]; then
+            VERSIONS=("${ALL_VERSIONS[@]}")
+          else
+            read -ra VERSIONS <<< "$INPUT_NODE"
+          fi
+
+          if [ "$INPUT_VARIANT" = "*" ]; then
+            VARIANTS=("node" "sshd")
+          else
+            VARIANTS=($INPUT_VARIANT)
+          fi
+
+          VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s -c .)
+          VARIANTS_JSON=$(printf '%s\n' "${VARIANTS[@]}" | jq -R . | jq -s -c .)
+
+          echo "versions=$VERSIONS_JSON" >> $GITHUB_OUTPUT
+          echo "variants=$VARIANTS_JSON" >> $GITHUB_OUTPUT
+
+  build:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ${{ fromJson(needs.docker-build.outputs.versions) }}
+        variant: ${{ fromJson(needs.docker-build.outputs.variants) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -22,7 +70,6 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -42,611 +89,26 @@ jobs:
           sudo swapon /swapfile
           sudo swapon --show
 
-      - name: Build and publish
+      - name: Build Node Docker image
+        if: matrix.variant == 'node'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/node
-          file: ./images/node/Dockerfile-24
+          file: ./images/node/Dockerfile-${{ matrix.node }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:24
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:${{ matrix.node }}
 
-  v24-sshd:
-    runs-on: ubuntu-22.04
-    name: v24-sshd
-    if: ${{ (github.event.inputs.version == '24-sshd') || (github.event.inputs.version == 'sshd') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
+      - name: Build Node SSH Docker image
+        if: matrix.variant == 'sshd'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/node
-          file: ./images/node/Dockerfile-24-sshd
+          file: ./images/node/Dockerfile-${{ matrix.node }}-${{ matrix.variant }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:24-sshd
-
-  v22:
-    runs-on: ubuntu-22.04
-    name: v22
-    if: ${{ (github.event.inputs.version == '22') || (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-22
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:22
-
-  v22-sshd:
-    runs-on: ubuntu-22.04
-    name: v22-sshd
-    if: ${{ (github.event.inputs.version == '22-sshd') || (github.event.inputs.version == 'sshd') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-22-sshd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:22-sshd
-
-  v20:
-    runs-on: ubuntu-22.04
-    name: v20
-    if: ${{ (github.event.inputs.version == '20') || (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-20
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:20
-
-  v20-sshd:
-    runs-on: ubuntu-22.04
-    name: v20-sshd
-    if: ${{ (github.event.inputs.version == '20-sshd') || (github.event.inputs.version == 'sshd') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-20-sshd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:20-sshd
-
-  v18:
-    runs-on: ubuntu-22.04
-    name: v18
-    if: ${{ (github.event.inputs.version == '18') || (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-18
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:18
-
-  v18-sshd:
-    runs-on: ubuntu-22.04
-    name: v18-sshd
-    if: ${{ (github.event.inputs.version == '18-sshd') || (github.event.inputs.version == 'sshd') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-18-sshd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:18-sshd
-
-  v16:
-    runs-on: ubuntu-22.04
-    name: v16
-    if: ${{ (github.event.inputs.version == '16') || (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-16
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:16
-
-  v16-sshd:
-    runs-on: ubuntu-22.04
-    name: v16-sshd
-    if: ${{ (github.event.inputs.version == '16-sshd') || (github.event.inputs.version == 'sshd') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-16-sshd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:16-sshd
-  
-  v14:
-    runs-on: ubuntu-22.04
-    name: v14
-    if: ${{ (github.event.inputs.version == '14') || (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-14
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:14
-
-  v14-sshd:
-    runs-on: ubuntu-22.04
-    name: v14-sshd
-    if: ${{ (github.event.inputs.version == '14-sshd') || (github.event.inputs.version == 'sshd') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-14-sshd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:14-sshd
-
-  v10:
-    runs-on: ubuntu-22.04
-    name: v10
-    if: ${{ (github.event.inputs.version == '10') || (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-10
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:10
-
-  v10-sshd:
-    runs-on: ubuntu-22.04
-    name: v10-sshd
-    if: ${{ (github.event.inputs.version == '10-sshd') || (github.event.inputs.version == 'sshd') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/node
-          file: ./images/node/Dockerfile-10-sshd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:10-sshd
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node:${{ matrix.node }}-${{ matrix.variant }}

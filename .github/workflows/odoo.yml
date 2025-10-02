@@ -2,15 +2,47 @@ name: odoo
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version deploy.'
+      python:
+        description: "Python version (vd: 3.12, 3.13 or *)"
         required: true
+        default: "*"
 
 jobs:
-  v3_13:
+  docker-build:
     runs-on: ubuntu-22.04
-    name: v3.13
-    if: ${{ (github.event.inputs.version == '3.13') || (github.event.inputs.version == '*') }}
+    outputs:
+      versions: ${{ steps.set-matrix.outputs.versions }}
+    steps:
+      - name: Generate matrix
+        id: set-matrix
+        run: |
+          INPUT_PYTHON="${{ github.event.inputs.python }}"
+
+          ALL_VERSIONS=(
+            3.7
+            3.8
+            3.9
+            3.10
+            3.11
+            3.12
+            3.13
+          )
+          if [ "$INPUT_PYTHON" = "*" ]; then
+            VERSIONS=("${ALL_VERSIONS[@]}")
+          else
+            read -ra VERSIONS <<< "$INPUT_PYTHON"
+          fi
+
+          VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s -c .)
+          echo "versions=$VERSIONS_JSON" >> $GITHUB_OUTPUT
+
+  build:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ${{ fromJson(needs.docker-build.outputs.versions) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -22,7 +54,6 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -48,283 +79,7 @@ jobs:
           DOCKER_BUILD_SUMMARY: false
         with:
           context: ./images/odoo
-          file: ./images/odoo/Dockerfile-python-3.13
+          file: ./images/odoo/Dockerfile-python-${{ matrix.python }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.13
-
-  v3_12:
-    runs-on: ubuntu-22.04
-    name: v3.12
-    if: ${{ (github.event.inputs.version == '3.12') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/odoo
-          file: ./images/odoo/Dockerfile-python-3.12
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.12
-
-  v3_11:
-    runs-on: ubuntu-22.04
-    name: v3.11
-    if: ${{ (github.event.inputs.version == '3.11') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/odoo
-          file: ./images/odoo/Dockerfile-python-3.11
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.11
-
-  v3_10:
-    runs-on: ubuntu-22.04
-    name: v3.10
-    if: ${{ (github.event.inputs.version == '3.10') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/odoo
-          file: ./images/odoo/Dockerfile-python-3.10
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.10
-
-  v3_9:
-    runs-on: ubuntu-22.04
-    name: v3.9
-    if: ${{ (github.event.inputs.version == '3.9') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/odoo
-          file: ./images/odoo/Dockerfile-python-3.9
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.9
-
-  v3_8:
-    runs-on: ubuntu-22.04
-    name: v3.8
-    if: ${{ (github.event.inputs.version == '3.8') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/odoo
-          file: ./images/odoo/Dockerfile-python-3.8
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.8
-
-  v3_7:
-    runs-on: ubuntu-22.04
-    name: v3.7
-    if: ${{ (github.event.inputs.version == '3.7') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/odoo
-          file: ./images/odoo/Dockerfile-python-3.7
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-3.7
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:python-${{ matrix.python }}
