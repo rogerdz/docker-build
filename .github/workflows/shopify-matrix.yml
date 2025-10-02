@@ -2,22 +2,60 @@ name: shopify-matrix
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version deploy.'
+      node:
+        description: "Node version (vd: 20, 22, 24 or *)"
         required: true
+        default: "*"
+      variant:
+        description: "Node variant: node, ssh or *"
+        required: true
+        default: "*"
 
 jobs:
-  publish:
+  docker-build:
     runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'node') || (github.event.inputs.version == '*') }}
+    outputs:
+      versions: ${{ steps.set-matrix.outputs.versions }}
+      variants: ${{ steps.set-matrix.outputs.variants }}
+    steps:
+      - name: Generate matrix
+        id: set-matrix
+        run: |
+          INPUT_NODE="${{ github.event.inputs.node }}"
+          INPUT_VARIANT="${{ github.event.inputs.variant }}"
+
+          ALL_VERSIONS=(
+            # 18
+            20
+            22
+            24
+          )
+          if [ "$INPUT_NODE" = "*" ]; then
+            VERSIONS=("${ALL_VERSIONS[@]}")
+          else
+            read -ra VERSIONS <<< "$INPUT_NODE"
+          fi
+
+          if [ "$INPUT_VARIANT" = "*" ]; then
+            VARIANTS=("node" "ssh")
+          else
+            VARIANTS=($INPUT_VARIANT)
+          fi
+
+          VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s -c .)
+          VARIANTS_JSON=$(printf '%s\n' "${VARIANTS[@]}" | jq -R . | jq -s -c .)
+
+          echo "versions=$VERSIONS_JSON" >> $GITHUB_OUTPUT
+          echo "variants=$VARIANTS_JSON" >> $GITHUB_OUTPUT
+
+  build:
+    needs: docker-build
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        node_version:
-          # - "18"
-          - "20"
-          - "22"
-          - "24"
+        node: ${{ fromJson(needs.docker-build.outputs.versions) }}
+        variant: ${{ fromJson(needs.docker-build.outputs.variants) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -48,68 +86,22 @@ jobs:
           sudo swapon /swapfile
           sudo swapon --show
 
-      - name: Build and publish
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
+          push: true
           context: ./images/shopify
-          file: ./images/shopify/Dockerfile-matrix
+          file: ./images/shopify/Dockerfile-matrix-${{ matrix.variant }}
+          file: >-
+            ${{ matrix.variant == 'node'
+              ? format('./docker/shopify/Dockerfile-matrix')
+              : format('./docker/shopify/Dockerfile-matrix-{0}', matrix.variant) }}
           platforms: linux/amd64,linux/arm64
           build-args: |
-            NODE_VERSION=${{ matrix.node_version }}
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopify:node-${{ matrix.node_version }}
-
-  ssh:
-    runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'ssh') || (github.event.inputs.version == '*') }}
-    strategy:
-      fail-fast: false
-      matrix:
-        node_version:
-          # - "18"
-          - "20"
-          - "22"
-          - "24"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Increase swapfile
-        run: |
-          sudo swapoff -a
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          sudo swapon --show
-
-      - name: Build and publish
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/shopify
-          file: ./images/shopify/Dockerfile-matrix-ssh
-          platforms: linux/amd64,linux/arm64
-          build-args: NODE_VERSION=${{ matrix.node_version }}
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopify:node-${{ matrix.node_version }}-ssh
+            NODE_VERSION=${{ matrix.node }}
+          tags: >-
+            ${{ matrix.variant == 'node'
+                && format('{0}/shopify:{1}', secrets.DOCKERHUB_USERNAME, matrix.node)
+                || format('{0}/shopify:{1}-{2}', secrets.DOCKERHUB_USERNAME, matrix.node, matrix.variant) }}
