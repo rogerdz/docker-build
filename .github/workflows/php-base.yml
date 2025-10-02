@@ -24,7 +24,7 @@ jobs:
           fi
           echo "matrix={\"php\":$VERSIONS,\"variant\":[\"cli\",\"fpm\"]}" >> $GITHUB_OUTPUT
 
-  build-docker:
+  build-amd64:
     needs: docker-build
     runs-on: ubuntu-22.04
     strategy:
@@ -38,12 +38,6 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           path: .
           sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Login Docker Hub
         uses: docker/login-action@v3
@@ -68,7 +62,68 @@ jobs:
           push: true
           context: ./images/php
           file: ./images/php/Dockerfile-base-${{ matrix.php }}
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:${{ matrix.php }}-${{ matrix.variant }}-base
+          platforms: linux/amd64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:${{ matrix.php }}-${{ matrix.variant }}-base-amd64
           build-args: |
             VARIANT=${{ matrix.variant }}
+
+  build-arm64:
+    needs: docker-build
+    runs-on: ubuntu-22.04-arm
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.docker-build.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ secrets.DOCKER_REPO }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: .
+          sparse-checkout: images
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Increase swapfile
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          push: true
+          context: ./images/php
+          file: ./images/php/Dockerfile-base-${{ matrix.php }}
+          platforms: linux/arm64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:${{ matrix.php }}-${{ matrix.variant }}-base-arm64
+          build-args: |
+            VARIANT=${{ matrix.variant }}
+
+  manifest:
+    needs: [docker-build, build-amd64, build-arm64]
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.docker-build.outputs.matrix) }}
+    steps:
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - run: |
+          docker buildx create --use
+          docker buildx imagetools create \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:${{ matrix.php }}-${{ matrix.variant }}-base \
+            ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:${{ matrix.php }}-${{ matrix.variant }}-base-amd64 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm:${{ matrix.php }}-${{ matrix.variant }}-base-arm64
