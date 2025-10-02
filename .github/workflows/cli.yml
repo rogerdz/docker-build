@@ -11,7 +11,7 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Generate matrix
         id: set-matrix
