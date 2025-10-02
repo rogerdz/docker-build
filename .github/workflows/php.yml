@@ -33,8 +33,8 @@ jobs:
             VARIANTS=(${{ github.event.inputs.variant }})
           fi
 
-          VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s .)
-          VARIANTS_JSON=$(printf '%s\n' "${VARIANTS[@]}" | jq -R . | jq -s .)
+          VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s -c .)
+          VARIANTS_JSON=$(printf '%s\n' "${VARIANTS[@]}" | jq -R . | jq -s -c .)
 
           echo "versions=$VERSIONS_JSON" >> $GITHUB_OUTPUT
           echo "variants=$VARIANTS_JSON" >> $GITHUB_OUTPUT
