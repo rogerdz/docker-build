@@ -86,21 +86,30 @@ jobs:
           sudo swapon /swapfile
           sudo swapon --show
 
-      - name: Build and push Docker image
+      - name: Build Node Docker image
+        if: matrix.variant == 'node'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
-          push: true
           context: ./images/shopify
-          file: >-
-            ${{ matrix.variant == 'node'
-              ? format('./docker/shopify/Dockerfile-matrix')
-              : format('./docker/shopify/Dockerfile-matrix-{0}', matrix.variant) }}
+          file: ./images/shopify/Dockerfile-matrix
           platforms: linux/amd64,linux/arm64
           build-args: |
             NODE_VERSION=${{ matrix.node }}
-          tags: >-
-            ${{ matrix.variant == 'node'
-                && format('{0}/shopify:{1}', secrets.DOCKERHUB_USERNAME, matrix.node)
-                || format('{0}/shopify:{1}-{2}', secrets.DOCKERHUB_USERNAME, matrix.node, matrix.variant) }}
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopify:node-${{ matrix.node }}
+
+      - name: Build Node SSH Docker image
+        if: matrix.variant == 'ssh'
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: ./images/shopify
+          file: ./images/shopify/Dockerfile-matrix-ssh
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            NODE_VERSION=${{ matrix.node }}
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/shopify:node-${{ matrix.node }}-ssh
