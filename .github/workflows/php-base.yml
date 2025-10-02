@@ -11,25 +11,42 @@ jobs:
   docker-build:
     runs-on: ubuntu-22.04
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      versions: ${{ steps.set-matrix.outputs.versions }}
+      variants: ${{ steps.set-matrix.outputs.variants }}
     steps:
       - name: Generate matrix
         id: set-matrix
         run: |
-          ALL_VERSIONS='["5.6","7.0","7.1","7.2","7.3","7.4","8.0","8.1","8.2","8.3","8.4"]'
-          if [ "${{ github.event.inputs.php }}" = "*" ]; then
-            VERSIONS=$ALL_VERSIONS
+          INPUT_PHP="${{ github.event.inputs.php }}"
+          INPUT_VARIANT="${{ github.event.inputs.variant }}"
+
+          ALL_VERSIONS='5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4'
+          if [ "$INPUT_PHP" = "*" ]; then
+            VERSIONS=($ALL_VERSIONS)
           else
-            VERSIONS='["'${{ github.event.inputs.php }}'"]'
+            read -ra VERSIONS <<< "$INPUT_PHP"
           fi
-          echo "matrix={\"php\":$VERSIONS,\"variant\":[\"cli\",\"fpm\"]}" >> $GITHUB_OUTPUT
+
+          if [ "$INPUT_VARIANT" = "*" ]; then
+            VARIANTS=("cli" "fpm")
+          else
+            VARIANTS=($INPUT_VARIANT)
+          fi
+
+          VERSIONS_JSON=$(printf '%s\n' "${VERSIONS[@]}" | jq -R . | jq -s -c .)
+          VARIANTS_JSON=$(printf '%s\n' "${VARIANTS[@]}" | jq -R . | jq -s -c .)
+
+          echo "versions=$VERSIONS_JSON" >> $GITHUB_OUTPUT
+          echo "variants=$VARIANTS_JSON" >> $GITHUB_OUTPUT
 
   build-amd64:
     needs: docker-build
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.docker-build.outputs.matrix) }}
+      matrix:
+        php: ${{ fromJson(needs.docker-build.outputs.versions) }}
+        variant: ${{ fromJson(needs.docker-build.outputs.variants) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -72,7 +89,9 @@ jobs:
     runs-on: ubuntu-22.04-arm
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.docker-build.outputs.matrix) }}
+      matrix:
+        php: ${{ fromJson(needs.docker-build.outputs.versions) }}
+        variant: ${{ fromJson(needs.docker-build.outputs.variants) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -115,7 +134,9 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.docker-build.outputs.matrix) }}
+      matrix:
+        php: ${{ fromJson(needs.docker-build.outputs.versions) }}
+        variant: ${{ fromJson(needs.docker-build.outputs.variants) }}
     steps:
       - name: Login Docker Hub
         uses: docker/login-action@v3
