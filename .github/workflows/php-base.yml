@@ -6,6 +6,10 @@ on:
         description: "PHP version (vd: 8.1, 8.2, 8.3 or *)"
         required: true
         default: "*"
+      variant:
+        description: "PHP variant: cli, fpm or *"
+        required: true
+        default: "*"
 
 jobs:
   docker-build:
