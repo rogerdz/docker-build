@@ -89,7 +89,7 @@ jobs:
           sudo swapon --show
 
       - name: Build Debian image
-        if: matrix.variant != 'shopify'
+        if: matrix.target != 'shopify'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
@@ -105,7 +105,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}-amd64
 
       - name: Build Wolfi image
-        if: matrix.variant == 'shopify'
+        if: matrix.target == 'shopify'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
@@ -151,7 +151,7 @@ jobs:
           sudo swapon --show
 
       - name: Build Debian image
-        if: matrix.variant != 'shopify'
+        if: matrix.target != 'shopify'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
@@ -167,7 +167,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}
 
       - name: Build Wolfi image
-        if: matrix.variant == 'shopify'
+        if: matrix.target == 'shopify'
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_SUMMARY: false
