@@ -164,7 +164,7 @@ jobs:
             BRANCH_CLI=${{ matrix.branch }}
             GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}-arm64
 
       - name: Build Wolfi image
         if: matrix.target == 'shopify'
@@ -180,7 +180,7 @@ jobs:
             BRANCH_CLI=${{ matrix.branch }}
             GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cli:${{ matrix.target }}-${{ matrix.distro }}-arm64
 
   manifest:
     needs: [docker-build, build-amd64, build-arm64]
