@@ -24,34 +24,26 @@ jobs:
             read -ra TARGETS <<< "$INPUT"
           fi
 
-          MATRIX_ENTRIES=()
+          JSON="["
           for t in "${TARGETS[@]}"; do
             case "$t" in
               php)
-                MATRIX_ENTRIES+=(
-                  '{"target":"php","distro":"stretch","branch":"master"}'
-                  '{"target":"php","distro":"buster","branch":"master"}'
-                  '{"target":"php","distro":"bullseye","branch":"master"}'
-                  '{"target":"php","distro":"bookworm","branch":"master"}'
-                )
+                JSON+='{"target":"php","distro":"stretch","branch":"master"},'
+                JSON+='{"target":"php","distro":"buster","branch":"master"},'
+                JSON+='{"target":"php","distro":"bullseye","branch":"master"},'
+                JSON+='{"target":"php","distro":"bookworm","branch":"master"},'
                 ;;
               node)
-                MATRIX_ENTRIES+=(
-                  '{"target":"node","distro":"buster","branch":"node"}'
-                  '{"target":"node","distro":"bullseye","branch":"node"}'
-                  '{"target":"node","distro":"bookworm","branch":"node"}'
-                )
+                JSON+='{"target":"node","distro":"buster","branch":"node"},'
+                JSON+='{"target":"node","distro":"bullseye","branch":"node"},'
+                JSON+='{"target":"node","distro":"bullseye","branch":"node"},'
                 ;;
               odoo)
-                MATRIX_ENTRIES+=(
-                  '{"target":"odoo","distro":"bullseye","branch":"odoo"}'
-                  '{"target":"odoo","distro":"bookworm","branch":"odoo"}'
-                )
+                JSON+='{"target":"odoo","distro":"bullseye","branch":"odoo"},'
+                JSON+='{"target":"odoo","distro":"bookworm","branch":"odoo"},'
                 ;;
               shopify)
-                MATRIX_ENTRIES+=(
-                  '{"target":"shopify","distro":"wolfi","branch":"shopify"}'
-                )
+                JSON+='{"target":"shopify","distro":"wolfi","branch":"shopify"},'
                 ;;
               *)
                 echo "Unknown target: $t"; exit 1
@@ -59,8 +51,11 @@ jobs:
             esac
           done
 
-          JSON=$(printf '%s\n' "${MATRIX_ENTRIES[@]}" | jq -s -c .)
-          echo "matrix=$JSON" >> $GITHUB_OUTPUT
+          JSON="${JSON%,}"
+          JSON+="]"
+
+          echo "Final matrix: $JSON"
+          echo "matrix=$JSON" >> "$GITHUB_OUTPUT"
 
   build-amd64:
     needs: docker-build
