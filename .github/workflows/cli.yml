@@ -36,7 +36,7 @@ jobs:
               node)
                 JSON+='{"target":"node","distro":"buster","branch":"node"},'
                 JSON+='{"target":"node","distro":"bullseye","branch":"node"},'
-                JSON+='{"target":"node","distro":"bullseye","branch":"node"},'
+                JSON+='{"target":"node","distro":"bookworm","branch":"node"},'
                 ;;
               odoo)
                 JSON+='{"target":"odoo","distro":"bullseye","branch":"odoo"},'
