@@ -13,7 +13,7 @@ jobs:
     if: ${{ (github.event.inputs.version == 'latest') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.17') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
     if: ${{ (github.event.inputs.version == '10.10') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
