@@ -73,6 +73,13 @@ jobs:
           path: .
           sparse-checkout: images
 
+      - name: free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          docker system prune -af
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
