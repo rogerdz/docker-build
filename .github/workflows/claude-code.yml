@@ -1,16 +1,10 @@
 name: claude-code
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version deploy.'
-        required: true
-        default: "latest"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'latest') || (github.event.inputs.version == '*') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -42,38 +36,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/claude-code:latest
-
-  ssh:
-    runs-on: ubuntu-latest
-    if: ${{ (github.event.inputs.version == 'ssh') || (github.event.inputs.version == '*') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          repository: ${{ secrets.DOCKER_REPO }}
-          token: ${{ secrets.GH_TOKEN }}
-          path: .
-          sparse-checkout: images
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      - name: Build and publish
-        uses: docker/build-push-action@v7
-        env:
-          DOCKER_BUILD_SUMMARY: false
-        with:
-          context: ./images/claude-code
-          file: ./images/claude-code/Dockerfile-sshd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/claude-code:ssh
