@@ -9,7 +9,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          repository: Ngxba/claude-code-cli-ui
+          repository: ${{ secrets.DOCKER_REPO }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: .
+          sparse-checkout: images
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
@@ -28,8 +31,8 @@ jobs:
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./images/claude-code-cli-ui
+          file: ./images/claude-code-cli-ui/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/claude-code-cli-ui:latest
