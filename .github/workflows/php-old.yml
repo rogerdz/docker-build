@@ -57,7 +57,7 @@ jobs:
         variant: ${{ fromJson(needs.docker-build.outputs.variants) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ${{ secrets.DOCKER_REPO }}
           token: ${{ secrets.GH_TOKEN }}
